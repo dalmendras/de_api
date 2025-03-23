@@ -9,6 +9,8 @@ const upload = multer({ dest: 'uploads/' });
 
 router
     .get('/', auth, hiredEmployeesController.getAll )
+    .get('/employee_quarter', auth, hiredEmployeesController.customEmployeeQuarter )
+    .get('/employee_department', auth, hiredEmployeesController.customEmployeeDepartment )
     .get('/:id', auth, hiredEmployeesController.getById )
     .post('/', auth, hiredEmployeesController.create )
     .put('/:id', auth, hiredEmployeesController.updateById )

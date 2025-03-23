@@ -1,6 +1,8 @@
 const HiredEmployeesService = require('../services/hired_employees.service');
 const service = new HiredEmployeesService();
 const uploadCsv = require('../utils/uploadCsv');
+const CustomService = require('../services/custom.service');
+const customService = new CustomService();
 
 const create = async ( req, res ) => {
     try { 
@@ -75,30 +77,6 @@ const deleteById = async (req, res) => {
     }
 }
 
-/*
-const uploadCsvFile = (limitRows) => async (req, res) => {
-
-    const headers = ['id', 'name', 'datetime', 'department_id', 'job_id'];
-
-    try {
-        const results = await uploadCsv(req, res, headers, limitRows);
-        const resController = await service.fileLoad(results);
-        res.status(200).send(resController);
-    } catch (error) {
-        if (error.message === 'Api Exceeded') {
-            res.status(413).send({   success: false, 
-                                     message: 'File exceeds maximum row limit of 1000 rows. Split file into smaller files and try again.',
-                                 });
-        } else {
-            console.error('Error saving data to the database:', error);
-            res.status(500).send({   success: false, 
-                                    message: 'Error saving data to the database.',
-                                });
-        }
-    }
-};
-*/
-
 const uploadCsvFile = (limitRows) => async (req, res) => {
     const headers = ['id', 'name', 'datetime', 'department_id', 'job_id'];
 
@@ -149,6 +127,66 @@ const uploadCsvFile = (limitRows) => async (req, res) => {
     }
 };
 
+
+const customEmployeeQuarter = async (req, res) => {
+    try {
+        const query =   `SELECT
+                        d.department,
+                        j.job,
+                        COUNT(CASE WHEN EXTRACT(QUARTER FROM he.datetime::timestamp) = 1 THEN he.id ELSE NULL END)::int AS Q1,
+                        COUNT(CASE WHEN EXTRACT(QUARTER FROM he.datetime::timestamp) = 2 THEN he.id ELSE NULL END)::int AS Q2,
+                        COUNT(CASE WHEN EXTRACT(QUARTER FROM he.datetime::timestamp) = 3 THEN he.id ELSE NULL END)::int AS Q3,
+                        COUNT(CASE WHEN EXTRACT(QUARTER FROM he.datetime::timestamp) = 4 THEN he.id ELSE NULL END)::int AS Q4
+                        FROM hired_employees he
+                        INNER JOIN departments d ON d.id = he.department_id
+                        INNER JOIN jobs j        ON j.id = he.job_id
+                        WHERE EXTRACT(YEAR FROM he.datetime::timestamp) = 2021
+                        GROUP BY 1, 2
+                        ORDER BY 1, 2;`;
+        const response = await customService.executeQuery(query);
+        return res.json(response);
+    } catch (error) {
+        console.error("Error executing custom query:", error);
+        return res.status(500).send({ 
+            success: false, 
+            message: error.message || 'An error occurred executing the query'
+        });
+    }
+}
+
+const customEmployeeDepartment = async (req, res) => {
+    try {
+        const query =   `SELECT
+                        d.id,
+                        d.department,
+                        COUNT(he.id) as hired
+                        FROM hired_employees he
+                        INNER JOIN departments d ON d.id = he.department_id
+                        WHERE EXTRACT(YEAR FROM he.datetime::timestamp) = 2021
+                        GROUP BY 1, 2
+                        HAVING COUNT(he.id) >= (
+                                                    SELECT avg(count_dep) AS mean
+                                                    FROM (
+                                                            SELECT
+                                                            d.department,
+                                                            COUNT(he.id) as count_dep
+                                                            FROM hired_employees he
+                                                            INNER JOIN departments d ON d.id = he.department_id
+                                                            WHERE EXTRACT(YEAR FROM he.datetime::timestamp) = 2021
+                                                            GROUP BY 1) as dep_stat
+                                                )
+                        ORDER BY 3 DESC;`;
+        const response = await customService.executeQuery(query);
+        return res.json(response);
+    } catch (error) {
+        console.error("Error executing custom query:", error);
+        return res.status(500).send({ 
+            success: false, 
+            message: error.message || 'An error occurred executing the query'
+        });
+    }
+}
+
 module.exports = {
-    create, getAll, getById, updateById, deleteById, uploadCsvFile
+    create, getAll, getById, updateById, deleteById, uploadCsvFile, customEmployeeQuarter, customEmployeeDepartment
 };
