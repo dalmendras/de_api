@@ -159,7 +159,7 @@ const customEmployeeDepartment = async (req, res) => {
         const query =   `SELECT
                         d.id,
                         d.department,
-                        COUNT(he.id) as hired
+                        COUNT(he.id)::int as hired
                         FROM hired_employees he
                         INNER JOIN departments d ON d.id = he.department_id
                         WHERE EXTRACT(YEAR FROM he.datetime::timestamp) = 2021
