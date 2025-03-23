@@ -37,7 +37,7 @@ class JobsService {
         let newCount = 0;
 
         for (const row of data) {
-            const rowData = { ...row }; // Convert row to object
+            const rowData = { ...row };
             console.log('Saving row:', rowData);
             const existingRecord = await this.findOne(rowData.id);
             if (existingRecord) {

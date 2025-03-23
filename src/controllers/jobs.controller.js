@@ -2,6 +2,7 @@ const JobsService = require('../services/jobs.service');
 const service = new JobsService();
 const uploadCsv = require('../utils/uploadCsv');
 
+
 const create = async ( req, res ) => {
     try { 
         const response = await service.create(req.body);
@@ -88,7 +89,6 @@ const uploadCsvFile = (limitRows) => async (req, res) => {
     const headers = ['id', 'job'];
 
     try {
-        // Note: We're no longer passing res to uploadCsv
         const results = await uploadCsv(req, headers, limitRows, 'jobs');
         
         // Check if results is an array before passing to fileLoad

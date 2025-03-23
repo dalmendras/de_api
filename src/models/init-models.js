@@ -9,7 +9,7 @@ function initModels(sequelize) {
   var jobs = _jobs(sequelize, DataTypes);
 
   jobs.hasMany(hired_employees, { as: "hired_employees", foreignKey: "job_id"});
-  hired_employees.belongsTo(jobs, { as: "job", foreignKey: "id"});
+  hired_employees.belongsTo(jobs, { as: "jobs", foreignKey: "id"});
   departments.hasMany(hired_employees, { as: "hired_employees", foreignKey: "department_id"});
   hired_employees.belongsTo(departments, { as: "department", foreignKey: "id"});
 
@@ -19,6 +19,7 @@ function initModels(sequelize) {
     jobs,
   };
 }
+
 module.exports = initModels;
 module.exports.initModels = initModels;
 module.exports.default = initModels;

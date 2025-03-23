@@ -1,60 +1,10 @@
-/*
-const fs = require('fs');
-const path = require('path');
-const csv = require('csv-parser');
-
-const uploadCsv = async (req, res, headers, limitRows) => {
-    if (!req.file) {
-        return res.status(400).send('No file uploaded.');
-    }
-
-    // Check if the file has a .csv extension
-    if (path.extname(req.file.originalname).toLowerCase() !== '.csv') {
-        return res.status(400).send('Invalid file type. Only .csv files are allowed.');
-    }
-
-    const filePath = path.join(__dirname, '../../uploads', req.file.filename);
-
-    // Process the CSV file here
-    const results = [];
-    let rowCount = 0;
-    const maxRows = limitRows ? 1000 : Infinity;
-
-    // Process the CSV file here
-    return new Promise((resolve, reject) => {
-        const stream = fs.createReadStream(filePath)
-            .pipe(csv({ separator: ',', headers: headers }))
-            .on('data', (data) => {
-                if (rowCount < maxRows) {
-                    console.log('Processing row:', data);
-                    // Cast id field as integer
-                    data.id = parseInt(data.id, 10);
-                    results.push(data);
-                    rowCount++;
-                } else {
-                    // If row count exceeds maxRows, stop processing and send a response
-                    stream.destroy(); // Stop the stream
-                    reject(new Error('Api Exceeded'));
-                }
-            })
-            .on('end', () => {
-                resolve(results);
-            })
-            .on('error', (err) => {
-                reject(err);
-            });
-    });
-};
-
-module.exports = uploadCsv;
-*/
-
-
 const fs = require('fs');
 const path = require('path');
 const csv = require('csv-parser');
 
 const uploadCsv = async (req, headers, limitRows, tableName) => {
+
+    // Check if a file was uploaded
     if (!req.file) {
         throw new Error('No file uploaded.');
     }
@@ -76,12 +26,13 @@ const uploadCsv = async (req, headers, limitRows, tableName) => {
         const stream = fs.createReadStream(filePath)
             .pipe(csv({ separator: ',', headers: headers }))
             .on('data', (data) => {
-                console.log('Processing row:', data);
+                // console.log('Processing row:', data);
                 if (rowCount < maxRows) {
+                    
                     // Check if required fields are present and can be parsed
                     let isValid = true;
                     
-                    // ID is always required
+                    // ID is always required all tables
                     const id = parseInt(data.id, 10);
                     if (isNaN(id)) {
                         console.log(`Skipping row with invalid id: ${data.id}`);
@@ -90,9 +41,9 @@ const uploadCsv = async (req, headers, limitRows, tableName) => {
                         data.id = id;
                     }
 
+                    // Fields Table hired_employees
                     if (tableName === 'hired_employees') {
-                    
-                        // job_id handling - set to null if undefined or empty string
+                        // department_id
                         if (data.department_id === undefined || data.department_id === '') {
                             console.log(`Setting department_id to null for row with id: ${data.department_id}`);
                             data.department_id = null;
@@ -105,8 +56,8 @@ const uploadCsv = async (req, headers, limitRows, tableName) => {
                                 data.department_id = deptId;
                             }
                         }
-                        
-                        // job_id handling - set to null if undefined or empty string
+
+                        // job_id
                         if (data.job_id === undefined || data.job_id === '') {
                             console.log(`Setting job_id to null for row with id: ${data.id}`);
                             data.job_id = null;
@@ -120,7 +71,7 @@ const uploadCsv = async (req, headers, limitRows, tableName) => {
                             }
                         }
 
-                        // job_id handling - set to null if undefined or empty string
+                        // datetime
                         if (data.datetime === undefined || data.datetime === '') {
                             console.log(`Setting job_id to null for row with id: ${data.datetime}`);
                             data.datetime = null;
@@ -136,7 +87,7 @@ const uploadCsv = async (req, headers, limitRows, tableName) => {
                     }
                 } else {
                     // If row count exceeds maxRows, stop processing
-                    stream.destroy(); // Stop the stream
+                    stream.destroy();
                     reject(new Error('Api Exceeded'));
                 }
             })
