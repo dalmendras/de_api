@@ -21,7 +21,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     department_id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
     references: {
         model: 'departments',
         key: 'id'
@@ -29,7 +29,7 @@ module.exports = function(sequelize, DataTypes) {
     },
     job_id: {
     type: DataTypes.INTEGER,
-    allowNull: false,
+    allowNull: true,
     references: {
         model: 'jobs',
         key: 'id'
@@ -61,14 +61,17 @@ module.exports = function(sequelize, DataTypes) {
           { name: "id" },
         ]
       },
+      // Delete this index to avoid duplicates
+      /*
       {
         name: "departments_jobs_id_idx",
-        unique: true,
+        unique: false,
         fields: [
           { name: "department_id" },
           { name: "job_id" },
         ]
       }
+      */
     ],
     hooks: {
       beforeUpdate: (ts_record, options) => {

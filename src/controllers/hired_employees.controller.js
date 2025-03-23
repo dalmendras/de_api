@@ -1,5 +1,6 @@
 const HiredEmployeesService = require('../services/hired_employees.service');
 const service = new HiredEmployeesService();
+const uploadCsv = require('../utils/uploadCsv');
 
 const create = async ( req, res ) => {
     try { 
@@ -74,6 +75,80 @@ const deleteById = async (req, res) => {
     }
 }
 
+/*
+const uploadCsvFile = (limitRows) => async (req, res) => {
+
+    const headers = ['id', 'name', 'datetime', 'department_id', 'job_id'];
+
+    try {
+        const results = await uploadCsv(req, res, headers, limitRows);
+        const resController = await service.fileLoad(results);
+        res.status(200).send(resController);
+    } catch (error) {
+        if (error.message === 'Api Exceeded') {
+            res.status(413).send({   success: false, 
+                                     message: 'File exceeds maximum row limit of 1000 rows. Split file into smaller files and try again.',
+                                 });
+        } else {
+            console.error('Error saving data to the database:', error);
+            res.status(500).send({   success: false, 
+                                    message: 'Error saving data to the database.',
+                                });
+        }
+    }
+};
+*/
+
+const uploadCsvFile = (limitRows) => async (req, res) => {
+    const headers = ['id', 'name', 'datetime', 'department_id', 'job_id'];
+
+    try {
+        // Note: We're no longer passing res to uploadCsv
+        const results = await uploadCsv(req, headers, limitRows, 'hired_employees');
+        
+        // Check if results is an array before passing to fileLoad
+        if (!Array.isArray(results)) {
+            return res.status(500).send({
+                success: false,
+                message: 'CSV parsing failed. Expected an array of results.'
+            });
+        }
+        
+        const resController = await service.fileLoad(results);
+        return res.status(200).send(resController);
+    } catch (error) {
+        console.error('Error processing file:', error);
+        
+        // Handle specific error cases
+        if (error.message === 'Api Exceeded') {
+            return res.status(413).send({
+                success: false, 
+                message: 'File exceeds maximum row limit of 1000 rows. Split file into smaller files and try again.'
+            });
+        } else if (error.message === 'No file uploaded.') {
+            return res.status(400).send({
+                success: false,
+                message: 'No file uploaded.'
+            });
+        } else if (error.message === 'Invalid file type. Only .csv files are allowed.') {
+            return res.status(400).send({
+                success: false,
+                message: 'Invalid file type. Only .csv files are allowed.'
+            });
+        } else if (error.message === 'No data found in file.') {
+            return res.status(400).send({
+                success: false,
+                message: 'The uploaded file contains no data.'
+            });
+        } else {
+            return res.status(500).send({
+                success: false, 
+                message: 'Error saving data to the database: ' + error.message
+            });
+        }
+    }
+};
+
 module.exports = {
-    create, getAll, getById, updateById, deleteById
+    create, getAll, getById, updateById, deleteById, uploadCsvFile
 };
