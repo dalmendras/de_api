@@ -18,6 +18,20 @@ GET: {{url_base}}/reports/employee_quarter?year=2021
 
 Bonus: The API is deployed on AWS, application is containerized using Docker and Postman file test.
 
+## Development Stack
+
+The API is built using the some following technologies:
+
+- **Programming Language:** Node JS
+- **Libs:** express, pg, sequelize, multer, csv-parser
+- **Database:** PostgreSQL
+- **Containerization:** Docker
+- **Cloud Provider:** AWS
+- **Testing:** Postman
+- **Version Control:** Git
+
+These technologies were chosen to ensure scalability, maintainability, and ease of deployment.
+
 # API Documentation
 
 ## Overview
