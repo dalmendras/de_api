@@ -3,7 +3,7 @@ FROM node:20-alpine
 # Create app directory
 WORKDIR /app
 
-COPY package*.json /app
+COPY package*.json /app/
 
 RUN npm install
 
@@ -16,7 +16,7 @@ RUN mkdir -p /app/uploads && \
 USER node
 
 # Bundle app source
-COPY --chown=node:node . /app
+COPY --chown=node:node . /app/
 
 # Bundle app source
 COPY . /app
