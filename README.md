@@ -1,4 +1,4 @@
-# Project Name
+# DE Challenge
 API Documentation Project DE Challenge
 
 ## Description
