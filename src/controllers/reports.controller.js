@@ -4,6 +4,15 @@ const customService = new CustomService();
 
 const customEmployeeQuarter = async (req, res) => {
     try {
+        // Default to 2021 if not provided
+        const year = req.query.year || 2021;
+        // Validate year is a valid number
+        if (isNaN(year) || year < 1900 || year > 2100) {
+            return res.status(400).send({
+                success: false,
+                message: 'Invalid year parameter. Must be a number between 1900 and 2100.'
+            });
+        }
         const query =   `SELECT
                         d.department,
                         j.job,
@@ -14,7 +23,7 @@ const customEmployeeQuarter = async (req, res) => {
                         FROM hired_employees he
                         INNER JOIN departments d ON d.id = he.department_id
                         INNER JOIN jobs j        ON j.id = he.job_id
-                        WHERE EXTRACT(YEAR FROM he.datetime::timestamp) = 2021
+                        WHERE EXTRACT(YEAR FROM he.datetime::timestamp) = ${year}
                         GROUP BY 1, 2
                         ORDER BY 1, 2;`;
         const response = await customService.executeQuery(query);
@@ -30,13 +39,23 @@ const customEmployeeQuarter = async (req, res) => {
 
 const customEmployeeDepartment = async (req, res) => {
     try {
+        // Default to 2021 if not provided
+        const year = req.query.year || 2021;
+        
+        // Validate year is a valid number
+        if (isNaN(year) || year < 1900 || year > 2100) {
+            return res.status(400).send({
+                success: false,
+                message: 'Invalid year parameter. Must be a number between 1900 and 2100.'
+            });
+        }
         const query =   `SELECT
                         d.id,
                         d.department,
                         COUNT(he.id)::int as hired
                         FROM hired_employees he
                         INNER JOIN departments d ON d.id = he.department_id
-                        WHERE EXTRACT(YEAR FROM he.datetime::timestamp) = 2021
+                        WHERE EXTRACT(YEAR FROM he.datetime::timestamp) = ${year}
                         GROUP BY 1, 2
                         HAVING COUNT(he.id) >= (
                                                     SELECT avg(count_dep) AS mean
@@ -46,7 +65,7 @@ const customEmployeeDepartment = async (req, res) => {
                                                             COUNT(he.id) as count_dep
                                                             FROM hired_employees he
                                                             INNER JOIN departments d ON d.id = he.department_id
-                                                            WHERE EXTRACT(YEAR FROM he.datetime::timestamp) = 2021
+                                                            WHERE EXTRACT(YEAR FROM he.datetime::timestamp) = ${year}
                                                             GROUP BY 1) as dep_stat
                                                 )
                         ORDER BY 3 DESC;`;

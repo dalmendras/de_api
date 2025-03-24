@@ -1,8 +1,6 @@
 const HiredEmployeesService = require('../services/hired_employees.service');
 const service = new HiredEmployeesService();
 const uploadCsv = require('../utils/uploadCsv');
-const CustomService = require('../services/custom.service');
-const customService = new CustomService();
 
 
 const create = async ( req, res ) => {
