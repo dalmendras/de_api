@@ -55,26 +55,26 @@ DEL: {{url_base}}/jobs/1
 
 **departments:**
 
-GET: {{url_base}}/departments
-GET: {{url_base}}/departments/:id
-POST: {{url_base}}/departments
-POST: {{url_base}}/departments/upload
-PUT: {{url_base}}/departments/:id
-DEL: {{url_base}}/departments/:id
+- GET: {{url_base}}/departments
+- GET: {{url_base}}/departments/:id
+- POST: {{url_base}}/departments
+- POST: {{url_base}}/departments/upload
+- PUT: {{url_base}}/departments/:id
+- DEL: {{url_base}}/departments/:id
 
 **hired_employees:**
 
-GET: {{url_base}}/hired_employees
-GET: {{url_base}}/hired_employees/:id
-POST: {{url_base}}/hired_employees
-POST: {{url_base}}/hired_employees/upload
-POST: {{url_base}}/hired_employees/upload_bigfile
-PUT: {{url_base}}/hired_employees/:id
-DEL: {{url_base}}/hired_employees/:id
+- GET: {{url_base}}/hired_employees
+- GET: {{url_base}}/hired_employees/:id
+- POST: {{url_base}}/hired_employees
+- POST: {{url_base}}/hired_employees/upload
+- POST: {{url_base}}/hired_employees/upload_bigfile
+- PUT: {{url_base}}/hired_employees/:id
+- DEL: {{url_base}}/hired_employees/:id
 
 **reports:**
-GET: {{url_base}}/reports/employee_department?year=2021
-GET: {{url_base}}/reports/employee_quarter?year=2021
+- GET: {{url_base}}/reports/employee_department?year=2021
+- GET: {{url_base}}/reports/employee_quarter?year=2021
 
 
 ## Authentication
@@ -86,8 +86,8 @@ Username: admin@admin.com
 Password: password
 ```
 
-Endpoints were tested with Postman. If you want to load endpoint with Postman App, you can use json file
-available in this link:
+Endpoints were tested with **Postman**. If you want to load endpoint with Postman App, you can use json file
+available in this link: **`https://drive.google.com/file/d/1gXSRS_1GBuLkE9Ba_V5ymy-xZswgUbbO/view?usp=sharing`**
 
 ## Endpoints Example
 Example for JOBS
@@ -179,9 +179,10 @@ The API uses standard HTTP status codes to indicate the success or failure of a 
 - David Almendras Riesco
 
 ## Roles and Descriptions
-| Role       | Description                                      |
-|------------|--------------------------------------------------|
-| Developer  | Responsible for developing and maintaining the API. |
+
+| Role | Description |
+| --- | --- |
+| Developer | Responsible for developing and maintaining the API. |
 
 ## Contact
 For any questions or support, please contact [david.almendras.riesco@gmail.com](mailto:david.almendras.riesco@gmail.com).
