@@ -22,18 +22,10 @@ module.exports = function(sequelize, DataTypes) {
     department_id: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    references: {
-        model: 'departments',
-        key: 'id'
-    }
     },
     job_id: {
     type: DataTypes.INTEGER,
     allowNull: true,
-    references: {
-        model: 'jobs',
-        key: 'id'
-    }
     },
     createdAt:{
       type: DataTypes.DATE,
@@ -53,26 +45,6 @@ module.exports = function(sequelize, DataTypes) {
     schema: 'public',
     timestamps: false,
     defaultScope: defaultScope,
-    indexes: [
-      {
-        name: "hired_employees_pkey",
-        unique: true,
-        fields: [
-          { name: "id" },
-        ]
-      },
-      // Delete this index to avoid duplicates
-      /*
-      {
-        name: "departments_jobs_id_idx",
-        unique: false,
-        fields: [
-          { name: "department_id" },
-          { name: "job_id" },
-        ]
-      }
-      */
-    ],
     hooks: {
       beforeUpdate: (ts_record, options) => {
         ts_record.updatedAt = new Date();

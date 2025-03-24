@@ -1,28 +1,20 @@
+# Node.js application
 FROM node:20-alpine
 
 # Create app directory
 WORKDIR /app
 
+# Install app dependencies
 COPY package*.json /app/
 
-RUN npm install
+# Install app dependencies
+RUN npm install && npm ls
 
-# Create uploads directory with proper permissions (single command)
-RUN mkdir -p /app/uploads && \
-    chown -R node:node /app && \
-    chmod 755 /app/uploads
-
-# Remove any existing node_modules
-# RUN rm -rf /app/node_modules
-
-# Set the user
-USER node
+# Create uploads directory
+RUN mkdir -p /app/uploads && chmod 777 /app/uploads
 
 # Bundle app source
-COPY --chown=node:node . /app/
-
-# Bundle app source
-# COPY . /app
+COPY . /app/
 
 # Build the app
 EXPOSE 3000

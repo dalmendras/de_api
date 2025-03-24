@@ -34,15 +34,6 @@ module.exports = function(sequelize, DataTypes) {
     schema: 'public',
     timestamps: false,
     defaultScope: defaultScope,
-    indexes: [
-      {
-        name: "departments_pkey",
-        unique: true,
-        fields: [
-          { name: "id" },
-        ]
-      },
-    ],
     hooks: {
       beforeUpdate: (ts_record, options) => {
         ts_record.updatedAt = new Date();
