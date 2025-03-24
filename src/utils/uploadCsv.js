@@ -4,6 +4,11 @@ const csv = require('csv-parser');
 
 const uploadCsv = async (req, headers, limitRows, tableName) => {
 
+    console.log('Request received:', { 
+        hasFile: !!req.file,
+        fileInfo: req.file ? `${req.file.originalname} (${req.file.size} bytes)` : 'No file'
+    });
+
     // Check if a file was uploaded
     if (!req.file) {
         throw new Error('No file uploaded.');

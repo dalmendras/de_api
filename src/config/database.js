@@ -20,7 +20,13 @@ const sequelize = new Sequelize(
     }
   );
 
-// sequelize.sync({ alter: true })
+// Basic sync - creates tables if they don't exist
+// sequelize.sync();
+// Force sync - drops all tables and recreates them (DANGEROUS)
+// sequelize.sync({ force: true });
+// Alter sync - alters tables to match models (RISKY)
+sequelize.sync({ alter: true });
+
 const models = initModels(sequelize);
 
 module.exports = { sequelize, models };

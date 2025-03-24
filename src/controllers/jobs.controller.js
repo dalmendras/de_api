@@ -86,6 +86,11 @@ const deleteById = async (req, res) => {
 
 const uploadCsvFile = (limitRows) => async (req, res) => {
 
+    console.log('Request headers:', req.headers);
+    console.log('Request body keys:', Object.keys(req.body));
+    console.log('Request files:', req.files);
+    console.log('Request file:', req.file);
+    
     const headers = ['id', 'job'];
 
     try {

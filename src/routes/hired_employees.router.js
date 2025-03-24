@@ -2,10 +2,8 @@ const express = require('express');
 const router = express.Router(); 
 const hiredEmployeesController = require('../controllers/hired_employees.controller');
 const auth = require('../middleware/auth');
-const multer = require('multer');
-
-// Set up multer for file uploads
-const upload = multer({ dest: 'uploads/' });
+const configureMulter = require('../utils/multerConfig');
+const upload = configureMulter();
 
 router
     .get('/', auth, hiredEmployeesController.getAll )

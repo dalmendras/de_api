@@ -18,6 +18,9 @@ services:
       - API_PASS_MASTER=password
     depends_on:
       - node_db
+    volumes:
+      - ./uploads:/app/uploads  # Add this line
+      - .:/app
     restart: always
   node_db:
     container_name: node_db
