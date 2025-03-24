@@ -19,7 +19,7 @@ USER node
 COPY --chown=node:node . /app/
 
 # Bundle app source
-COPY . /app
+# COPY . /app
 
 # Build the app
 EXPOSE 3000
